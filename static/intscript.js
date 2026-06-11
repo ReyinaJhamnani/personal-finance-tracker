@@ -1,14 +1,3 @@
-/* ═══════════════════════════════════════════════════════════════════
-   FinBoard — intscript.js   (v3 — fully fixed)
-   Fixes in this version:
-   1. Scroll works — layout is CSS-driven, JS untouched
-   2. Future transaction dates blocked (max = today)
-   3. Notification bell opens a panel with all notification history
-   4. Search bar filters transactions, bills, cards live
-   5. Credit sign bug fixed (+/- shown correctly)
-   6. All previous validation fixes retained
-═══════════════════════════════════════════════════════════════════ */
-
 /* ── STATE ───────────────────────────────────────────────────────── */
 let transactions  = [];
 let goals         = [];
@@ -18,7 +7,7 @@ let expChart      = null;
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 /* ════════════════════════════════════════════════════════════════════
-   DATE HELPERS — FIX 2: block future dates on transaction input
+   DATE HELPERS 
 ════════════════════════════════════════════════════════════════════ */
 function todayStr() {
     // returns "YYYY-MM-DD" in local time (not UTC)
@@ -146,7 +135,7 @@ document.querySelectorAll('.dialog-box').forEach(box => {
 });
 
 /* ════════════════════════════════════════════════════════════════════
-   NOTIFICATION BELL PANEL — FIX 3
+   NOTIFICATION BELL PANEL — 
 ════════════════════════════════════════════════════════════════════ */
 function toggleNotifPanel() {
     const panel = document.getElementById('notifPanel');
@@ -219,7 +208,7 @@ function closeNotification() {
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   SEARCH — FIX 4
+   SEARCH 
    Searches across: transactions table, bills table, balances table
 ════════════════════════════════════════════════════════════════════ */
 function handleSearch(query) {
@@ -738,6 +727,6 @@ function displayDate() {
 window.onload = function () {
     displayDate();
     displayGreeting();
-    setDateConstraints();   // FIX 2: set max/min on date pickers
+    setDateConstraints();   
     refreshDashboard();
 };
