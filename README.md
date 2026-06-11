@@ -119,10 +119,23 @@ springboard/
 <img width="1919" height="833" alt="image" src="https://github.com/user-attachments/assets/85e2a9a2-57fe-4c8a-affa-698bd1e46876" />
 
 ### Dashboard
-![Dashboard](static/images/balances.jpg)
+<img width="1919" height="832" alt="image" src="https://github.com/user-attachments/assets/82f3ab88-47e6-442c-bb1f-1551fa1f40ce" />
 
-### Expenses Chart
-![Expenses](static/images/expenses.jpg)
+### Balances page
+<img width="1919" height="833" alt="image" src="https://github.com/user-attachments/assets/f96acf71-12de-471c-8784-bba852f1f94c" />
+
+### Transactions page
+<img width="1919" height="833" alt="image" src="https://github.com/user-attachments/assets/dbd35944-eaff-4b54-bb54-2611ada5ce9c" />
+
+### Bills page
+<img width="1919" height="835" alt="image" src="https://github.com/user-attachments/assets/58ceb567-7b7d-4302-97b1-d5f8c290be35" />
+
+### Expenses page
+<img width="1919" height="829" alt="image" src="https://github.com/user-attachments/assets/c37e10df-67c5-42da-b38c-d1bed9ec0beb" />
+<img width="1919" height="388" alt="image" src="https://github.com/user-attachments/assets/92ce89ca-f161-43dc-9498-cf185644b1f3" />
+
+### Goals page
+<img width="1919" height="832" alt="image" src="https://github.com/user-attachments/assets/987826ef-08ef-4588-ade6-163f38c9be2e" />
 
 ## 📌 Use Case
 
