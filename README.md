@@ -1,4 +1,4 @@
-<img width="1919" height="839" alt="image" src="https://github.com/user-attachments/assets/7046302d-2ffd-4c41-85d9-e64f944b8d07" />## FinBoard — Personal Finance Tracker
+## FinBoard — Personal Finance Tracker
 
 A full-stack personal finance web application built with Flask and MySQL. Manage cards, track transactions, monitor bills, set financial goals, and visualize monthly expenses — all behind secure login authentication.
 
