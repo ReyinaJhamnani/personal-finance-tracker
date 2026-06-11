@@ -1,4 +1,3 @@
-// Kept for backward-compat. Auth logic lives inline in each template.
 function signUp() {
     const name     = document.getElementById('signupname').value;
     const email    = document.getElementById('signupEmail').value;
