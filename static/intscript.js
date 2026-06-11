@@ -113,7 +113,28 @@ function navigate(sectionId, el) {
 ════════════════════════════════════════════════════════════════════ */
 function openDialog(id) {
     document.getElementById(id).classList.add('active');
-    closeNotifPanel(); // close bell panel if open
+    closeNotifPanel();
+    if (id === 'transactionDialogBox') populateAccountDropdown();
+}
+
+function populateAccountDropdown() {
+    const select = document.getElementById('accountName');
+    const rows   = Array.from(document.querySelectorAll('#balancesTableBody tr'))
+        .filter(r => r.cells.length > 1);
+    select.innerHTML = '<option value="" disabled selected>Select Account</option>';
+    if (!rows.length) {
+        const opt = document.createElement('option');
+        opt.disabled     = true;
+        opt.textContent  = '— Add a card first under Balances —';
+        select.appendChild(opt);
+        return;
+    }
+    rows.forEach(r => {
+        const opt       = document.createElement('option');
+        opt.value       = r.cells[1].textContent; // card name
+        opt.textContent = r.cells[1].textContent;
+        select.appendChild(opt);
+    });
 }
 function closeDialog(id) {
     document.getElementById(id).classList.remove('active');
