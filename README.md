@@ -114,6 +114,8 @@ springboard/
 
 ### Landing Page
 ![Landing](static/images/dashboard.jpg)
+<img width="1919" height="830" alt="image" src="https://github.com/user-attachments/assets/fd05a62f-d783-445a-9883-27b99f11d1ee" />
+
 
 ### Dashboard
 ![Dashboard](static/images/balances.jpg)
