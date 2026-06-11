@@ -123,7 +123,7 @@ springboard/
 
 ## 📌 Use Case
 
-Built as a Springboard internship project to demonstrate full-stack development with real database integration, session-based authentication, and dynamic frontend data visualization.
+Built as a Infosys Springboard internship project to demonstrate full-stack development with real database integration, session-based authentication, and dynamic frontend data visualization.
 
 ## About
 
