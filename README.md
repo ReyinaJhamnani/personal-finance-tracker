@@ -116,7 +116,7 @@ springboard/
 <img width="1919" height="830" alt="image" src="https://github.com/user-attachments/assets/b0600dd3-f132-4f1b-b7e3-e030ecad5789" />
 
 ### Signup Page
-<img width="1919" height="836" alt="image" src="https://github.com/user-attachments/assets/23cf4054-9d8e-4683-8a7e-e347efb5fdb5" />
+<img width="1919" height="833" alt="image" src="https://github.com/user-attachments/assets/85e2a9a2-57fe-4c8a-affa-698bd1e46876" />
 
 
 ### Dashboard
