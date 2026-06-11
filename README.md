@@ -118,7 +118,6 @@ springboard/
 ### Signup Page
 <img width="1919" height="833" alt="image" src="https://github.com/user-attachments/assets/85e2a9a2-57fe-4c8a-affa-698bd1e46876" />
 
-
 ### Dashboard
 ![Dashboard](static/images/balances.jpg)
 
