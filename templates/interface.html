@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinBoard — Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='intstyle.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════════════ -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <h2>💳 FinBoard</h2>
+        <span>Personal Finance</span>
+    </div>
+    <nav>
+        <a class="nav-item active" href="#" onclick="return navigate('dashboardContent', this)">
+            <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a class="nav-item" href="#" onclick="return navigate('balancesContent', this)">
+            <span class="nav-icon">💰</span> Balances
+        </a>
+        <a class="nav-item" href="#" onclick="return navigate('transactionsContent', this)">
+            <span class="nav-icon">↔️</span> Transactions
+        </a>
+        <a class="nav-item" href="#" onclick="return navigate('billsContent', this)">
+            <span class="nav-icon">🧾</span> Bills
+        </a>
+        <a class="nav-item" href="#" onclick="return navigate('expensesContent', this)">
+            <span class="nav-icon">📈</span> Expenses
+        </a>
+        <a class="nav-item" href="#" onclick="return navigate('goalsContent', this)">
+            <span class="nav-icon">🎯</span> Goals
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="/logout" style="display:block;text-align:center;margin-bottom:10px;font-size:12px;color:rgba(255,255,255,0.5);text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">⎋ Logout</a>
+        <div class="avatar-row">
+            <div class="avatar" id="avatarInitials">U</div>
+            <div class="avatar-name" id="greeting">{{ user_name }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════════ -->
+<div class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="header">
+        <div class="header-left">
+            <h1 id="pageTitle">Dashboard</h1>
+            <p id="dateDisplay"></p>
+        </div>
+        <div class="header-right">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search transactions, bills..." oninput="handleSearch(this.value)">
+            </div>
+            <!-- Bell with dropdown panel -->
+            <div class="bell-wrap">
+                <div class="bell-btn" id="bellBtn" onclick="toggleNotifPanel()">
+                    🔔<span id="notifDot"></span>
+                </div>
+                <div id="notifPanel">
+                    <div class="notif-panel-header">
+                        <span>Notifications</span>
+                        <button class="notif-clear-btn" onclick="clearAllNotifications()">Clear all</button>
+                    </div>
+                    <div id="notifList">
+                        <div class="notif-empty">No notifications yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCROLLABLE CONTENT -->
+    <div id="pageContent">
+
+        <!-- Inline banner (for validation errors / warnings shown inside page) -->
+        <div id="notificationArea">
+            <span id="notifIcon">⚠️</span>
+            <span id="notificationMessage"></span>
+            <span class="close-notif" onclick="closeNotification()">×</span>
+        </div>
+
+        <!-- Search no-result -->
+        <div class="search-no-result" id="searchNoResult">
+            No results found for your search.
+        </div>
+
+        <!-- ── DASHBOARD ── -->
+        <div class="section active" id="dashboardContent">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="label">Total Balance</div>
+                    <div class="value" id="totalBalance">₹0.00</div>
+                    <span class="badge badge-info">Across all cards</span>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Credits This Month</div>
+                    <div class="value" id="statCredits">₹0.00</div>
+                    <span class="badge badge-up">Received</span>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Debits This Month</div>
+                    <div class="value" id="statDebits">₹0.00</div>
+                    <span class="badge badge-down">Spent</span>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Active Goals</div>
+                    <div class="value" id="statGoals">0</div>
+                    <span class="badge badge-info">Set</span>
+                </div>
+            </div>
+            <div class="dash-grid">
+                <div class="card">
+                    <h3>🧾 Upcoming Bills</h3>
+                    <div id="dashBillsList"><div class="empty-state">No bills added yet</div></div>
+                </div>
+                <div class="card">
+                    <h3>↔️ Recent Transactions</h3>
+                    <div id="dashTxnsList"><div class="empty-state">No transactions yet</div></div>
+                </div>
+                <div class="card" style="grid-column: 1 / -1">
+                    <h3>📊 Expense Breakdown</h3>
+                    <div id="expenseBreakdown"><div class="empty-state">Add transactions to see breakdown</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── BALANCES ── -->
+        <div class="section" id="balancesContent">
+            <div class="section-header">
+                <h2>Your Cards</h2>
+                <button class="btn-primary" onclick="openDialog('dialogBox')">+ Add Card</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Card Number</th><th>Card Name</th>
+                        <th>Expiry Date</th><th>CVV</th><th>Balance</th>
+                    </tr></thead>
+                    <tbody id="balancesTableBody">
+                        <tr><td colspan="5" class="empty-state">No cards added yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── TRANSACTIONS ── -->
+        <div class="section" id="transactionsContent">
+            <div class="section-header">
+                <h2>Transactions</h2>
+                <button class="btn-primary" onclick="openDialog('transactionDialogBox')">+ Add Transaction</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Account Name</th><th>Goal</th>
+                        <th>Payment Type</th><th>Date</th><th>Amount</th>
+                    </tr></thead>
+                    <tbody id="transactionsTableBody">
+                        <tr><td colspan="5" class="empty-state">No transactions yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── BILLS ── -->
+        <div class="section" id="billsContent">
+            <div class="section-header">
+                <h2>Upcoming Bills</h2>
+                <button class="btn-primary" onclick="openDialog('billDialogBox')">+ Add Bill</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Bill Name</th><th>Description</th>
+                        <th>Due Date</th><th>Amount</th>
+                    </tr></thead>
+                    <tbody id="billsTableBody">
+                        <tr><td colspan="4" class="empty-state">No bills added yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── EXPENSES ── -->
+        <div class="section" id="expensesContent">
+            <div class="section-header"><h2>Monthly Expenses</h2></div>
+            <div class="card" style="margin-bottom:16px">
+                <h3>📅 Credits vs Debits (by Month)</h3>
+                <canvas id="expensesChart" height="140"></canvas>
+            </div>
+            <div class="card">
+                <h3>🗂 Category Breakdown</h3>
+                <div id="expensesBreakdown"><div class="empty-state">No expense data yet</div></div>
+            </div>
+        </div>
+
+        <!-- ── GOALS ── -->
+        <div class="section" id="goalsContent">
+            <div class="section-header">
+                <h2>Financial Goals</h2>
+                <button class="btn-primary" onclick="openDialog('goalDialogBox')">+ Add Goal</button>
+            </div>
+            <div class="card">
+                <div id="goalsTableBody"><div class="empty-state">No goals set yet</div></div>
+            </div>
+        </div>
+
+    </div><!-- /pageContent -->
+</div><!-- /main-content -->
+
+<!-- ══ DIALOG: ADD ACCOUNT ════════════════════════════════════════ -->
+<div class="dialog-box" id="dialogBox">
+    <div class="dialog-inner">
+        <span class="close-icon" onclick="closeDialog('dialogBox')">×</span>
+        <h2>Add New Card</h2>
+        <div class="card-box">
+            <div class="emv-chip"></div>
+            <div class="card-info">
+                <input type="text" id="cardNumberDisplay" placeholder="**** **** **** ****"
+                       maxlength="19" oninput="mirrorToPreview('cardNumberDisplay','cardNumber')">
+                <div class="card-row">
+                    <span>Valid Thru<br>
+                        <input type="text" id="expiryDateDisplay" placeholder="**/**" maxlength="5"
+                               style="font-size:12px;font-weight:600;width:60px"
+                               oninput="mirrorToPreview('expiryDateDisplay','expiryDate')">
+                    </span>
+                    <input type="text" id="cardNameDisplay" placeholder="YOUR NAME"
+                           style="text-align:right;font-size:13px;font-weight:600;width:140px"
+                           oninput="mirrorToPreview('cardNameDisplay','cardName')">
+                </div>
+            </div>
+        </div>
+        <form id="addAccountForm">
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" name="cardNumber" maxlength="19"
+                       placeholder="1234 5678 9012 3456"
+                       oninput="mirrorToPreview('cardNumber','cardNumberDisplay')">
+            </div>
+            <div class="form-group">
+                <label for="cardName">Card Name</label>
+                <input type="text" id="cardName" name="cardName" placeholder="Full Name"
+                       oninput="mirrorToPreview('cardName','cardNameDisplay')">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiryDate">Expiry (MM/YY)</label>
+                    <input type="text" id="expiryDate" name="expiryDate" maxlength="5" placeholder="MM/YY"
+                           oninput="mirrorToPreview('expiryDate','expiryDateDisplay')">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" maxlength="3" placeholder="***">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="amount">Balance (₹)</label>
+                <input type="number" id="amount" name="amount" placeholder="0.00" min="0" step="0.01">
+            </div>
+            <button type="submit" class="submit-btn">Add Card</button>
+        </form>
+    </div>
+</div>
+
+<!-- ══ DIALOG: ADD TRANSACTION ════════════════════════════════════ -->
+<div class="dialog-box" id="transactionDialogBox">
+    <div class="dialog-inner">
+        <span class="close-icon" onclick="closeDialog('transactionDialogBox')">×</span>
+        <h2>Add Transaction</h2>
+        <form id="addTransactionForm">
+            <div class="form-group">
+                <label for="accountName">Account Name</label>
+                <select id="accountName" name="accountName">
+                    <option value="" disabled selected>Select Account</option>
+                    <option>Main Savings</option>
+                    <option>Retirement Savings</option>
+                    <option>Education Fund</option>
+                    <option>Emergency Fund</option>
+                    <option>Vacation Fund</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="goal">Goal</label>
+                <select id="goal" name="goal">
+                    <option value="" disabled selected>Select Goal</option>
+                    <option value="Withdraw">Withdraw</option>
+                    <option value="Deposit">Deposit</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Investment">Investment</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="paymentType">Payment Type</label>
+                <select id="paymentType" name="paymentType">
+                    <option value="" disabled selected>Select Type</option>
+                    <option>Credit</option>
+                    <option>Debit</option>
+                    <option>Bank Transfer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="paymentDate">Date of Payment</label>
+                <!-- max set by JS on load to today's date — no future dates -->
+                <input type="date" id="paymentDate" name="paymentDate">
+            </div>
+            <div class="form-group">
+                <label for="transactionAmount">Amount (₹)</label>
+                <input type="number" id="transactionAmount" name="transactionAmount"
+                       placeholder="0.00" min="0.01" step="0.01">
+            </div>
+            <button type="submit" class="submit-btn">Add Transaction</button>
+        </form>
+    </div>
+</div>
+
+<!-- ══ DIALOG: ADD BILL ════════════════════════════════════════════ -->
+<div class="dialog-box" id="billDialogBox">
+    <div class="dialog-inner">
+        <span class="close-icon" onclick="closeDialog('billDialogBox')">×</span>
+        <h2>Add Bill</h2>
+        <form id="addBillForm">
+            <div class="form-group">
+                <label for="billName">Bill Name</label>
+                <input type="text" id="billName" name="billName" placeholder="e.g. Electricity">
+            </div>
+            <div class="form-group">
+                <label for="itemDescription">Description</label>
+                <input type="text" id="itemDescription" name="itemDescription" placeholder="Short description">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+                    <!-- Bills CAN be in the future — no max needed, but min = today -->
+                    <input type="date" id="dueDate" name="dueDate">
+                </div>
+                <div class="form-group">
+                    <label for="billamount">Amount (₹)</label>
+                    <input type="number" id="billamount" name="billamount"
+                           placeholder="0.00" min="0.01" step="0.01">
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Add Bill</button>
+        </form>
+    </div>
+</div>
+
+<!-- ══ DIALOG: ADD GOAL ════════════════════════════════════════════ -->
+<div class="dialog-box" id="goalDialogBox">
+    <div class="dialog-inner">
+        <span class="close-icon" onclick="closeDialog('goalDialogBox')">×</span>
+        <h2>Add Financial Goal</h2>
+        <form id="addGoalForm">
+            <div class="form-group">
+                <label for="goalName">Goal Name</label>
+                <input type="text" id="goalName" name="goalName" placeholder="e.g. Emergency Fund">
+            </div>
+            <div class="form-group">
+                <label for="goalTarget">Target Amount (₹)</label>
+                <input type="number" id="goalTarget" name="goalTarget"
+                       placeholder="0.00" min="0.01" step="0.01">
+            </div>
+            <button type="submit" class="submit-btn">Set Goal</button>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='intscript.js') }}"></script>
+</body>
+</html>

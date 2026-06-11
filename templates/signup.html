@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>FinBoard — Sign Up</title>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">💳 FinBoard</div>
+        <h2>Create an Account</h2>
+        <p class="subtitle">Get started with your personal finance tracker.</p>
+
+        {% if error %}
+        <div style="background:#fde8e8;border:1px solid #c0392b;color:#7b1a1a;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;">
+            ❌ {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            <div class="input-group">
+                <label for="signupname">Full Name</label>
+                <input type="text" id="signupname" name="signupname" placeholder="Your full name" required>
+            </div>
+            <div class="input-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" name="signupEmail" placeholder="you@example.com" required>
+            </div>
+            <div class="input-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" name="signupPassword" placeholder="Min. 6 characters" required minlength="6">
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+    </div>
+</body>
+</html>
